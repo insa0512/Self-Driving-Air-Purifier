@@ -12,5 +12,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Aduino2"
+rootProject.name = "Self-Driving-Air-Purifier"
 include ':app'

@@ -1,6 +1,7 @@
-package com.example.aduino2;
+package com.example.AirPurifier;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -9,6 +10,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     ConnectedBluetoothThread mThreadConnectedBluetooth;
     BluetoothDevice mBluetoothDevice;
     BluetoothSocket mBluetoothSocket;
-    String str="";
+    String str = "";
     Toolbar toolbar;
 
     final static int BT_MESSAGE_READ = 2;
@@ -62,20 +64,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        layout = (LinearLayout) findViewById(R.id.layout);
+        layout = findViewById(R.id.layout);
 
-        imgSet = (ImageView) findViewById(R.id.imageSet);
-        conditionTxt = (TextView) findViewById(R.id.contidionText);
-        statusTxt = (TextView) findViewById(R.id.stausText);
-        explainTxt = (TextView) findViewById(R.id.explainText);
-        temperaturTxt = (TextView) findViewById(R.id.temperaturText);
-        humidityTxt = (TextView) findViewById(R.id.HumidityText);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        humiImage = (ImageView) findViewById(R.id.humiImage);
-        thImage = (ImageView) findViewById(R.id.thImage);
+        imgSet = findViewById(R.id.imageSet);
+        conditionTxt = findViewById(R.id.contidionText);
+        statusTxt = findViewById(R.id.stausText);
+        explainTxt = findViewById(R.id.explainText);
+        temperaturTxt = findViewById(R.id.temperaturText);
+        humidityTxt = findViewById(R.id.HumidityText);
+        toolbar = findViewById(R.id.toolbar);
+        humiImage = findViewById(R.id.humiImage);
+        thImage = findViewById(R.id.thImage);
         setSupportActionBar(toolbar);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { //버전30이상 부터 권한 추가 부여 요청함
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { // 버전30이상 부터 권한 추가 부여 요청함
             requestPermissions(
                     new String[]{
                             Manifest.permission.BLUETOOTH,
@@ -84,23 +86,22 @@ public class MainActivity extends AppCompatActivity {
                             Manifest.permission.BLUETOOTH_CONNECT
                     },
                     1);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { //버전 23 부터 불루투스 권한 부여 요청함
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 버전 23 부터 불루투스 권한 부여 요청함
             requestPermissions(
                     new String[]{
                             Manifest.permission.BLUETOOTH
-                    },
-                    1);
+                    }, 1);
         }
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        mBluetoothHandler = new Handler(){
-            public void handleMessage(android.os.Message msg){
+        mBluetoothHandler = new Handler(Looper.getMainLooper()) {
+            public void handleMessage(android.os.Message msg) {
             }
         };
     }
 
-    public boolean onKeyDown(int keyCode, KeyEvent event){ //종료 버튼시 팝업화면 띄우기
-        switch(keyCode){
+    public boolean onKeyDown(int keyCode, KeyEvent event) { //종료 버튼시 팝업화면 띄우기
+        switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
                 String alertTitle = "green home";
                 String buttonMessage = "어플을 종료하시겠습니까?";
@@ -152,15 +153,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     void bluetoothOn() { //블루투스 활성화시
-        if(mBluetoothAdapter == null) {
+        if (mBluetoothAdapter == null) {
             Toast.makeText(getApplicationContext(), "블루투스를 지원하지 않는 기기입니다.", Toast.LENGTH_LONG).show();
-        }
-        else {
+        } else {
             if (mBluetoothAdapter.isEnabled()) { //블루투스가 이미 켜져있을때
-            }
-            else { //불루투스가 켜져있지 않을 때
+            } else { //불루투스가 켜져있지 않을 때
                 Toast.makeText(getApplicationContext(), "블루투스가 활성화 되어 있지 않습니다.", Toast.LENGTH_LONG).show();
                 Intent intentBluetoothEnable = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 mStartForResult.launch(intentBluetoothEnable); //startActivityForResult는 옛날 펑션
@@ -177,7 +175,9 @@ public class MainActivity extends AppCompatActivity {
                     } else if (result.getResultCode() == RESULT_CANCELED) { // 블루투스 활성화를 취소를 클릭하였다면
                     }
                 }
-    });
+            });
+
+    @SuppressLint("MissingPermission")
     void listPairedDevices() { //블루투스 기기 목록
         if (mBluetoothAdapter.isEnabled()) { //블루투스가 이미 켜져 있을 때
             mPairedDevices = mBluetoothAdapter.getBondedDevices(); //블루투스 목록 가져옴
@@ -193,24 +193,20 @@ public class MainActivity extends AppCompatActivity {
                 final CharSequence[] items = mListPairedDevices.toArray(new CharSequence[mListPairedDevices.size()]);
                 mListPairedDevices.toArray(new CharSequence[mListPairedDevices.size()]);
 
-                builder.setItems(items, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int item) {
-                        connectSelectedDevice(items[item].toString());
-                    }
-                });
+                builder.setItems(items, (dialog, item) -> connectSelectedDevice(items[item].toString()));
                 AlertDialog alert = builder.create();
                 alert.show();
             } else {
                 Toast.makeText(getApplicationContext(), "페어링된 장치가 없습니다.", Toast.LENGTH_LONG).show();
             }
-        }
-        else {
+        } else {
             Toast.makeText(getApplicationContext(), "블루투스가 비활성화 되어 있습니다.", Toast.LENGTH_SHORT).show();
         }
     }
+
+    @SuppressLint("MissingPermission")
     void connectSelectedDevice(String selectedDeviceName) { //선택된 디바이스 연결
-        for(BluetoothDevice tempDevice : mPairedDevices) { //블루투스에서 누른 디바이스 이름 탐색 해서 정보 가져옴
+        for (BluetoothDevice tempDevice : mPairedDevices) { //블루투스에서 누른 디바이스 이름 탐색 해서 정보 가져옴
             if (selectedDeviceName.equals(tempDevice.getName())) {
                 mBluetoothDevice = tempDevice;
                 break;
@@ -244,6 +240,7 @@ public class MainActivity extends AppCompatActivity {
 
             mmInStream = tmpIn;
         }
+
         public void run() {
             mmBuffer = new byte[1024];
             int bytes;
@@ -260,15 +257,13 @@ public class MainActivity extends AppCompatActivity {
                         if (strBuf.charAt(i) == '#') { //먼지센서값을 #전까지 끊어서 읽음
                             str = str.replace("#", ""); //#를 ""로 바꿔서 화면에 띄움, Concat 토큰을 제거
                             showMessage(str, "Dust");//미세먼지 출력
-                            Log.d("Dust2", "str:"+str);
+                            Log.d("Dust2", "str:" + str);
                             str = ""; //str을 비워서 다음 값을 수신함
                             break;
-                        }
-
-                        else if (strBuf.charAt(i) == '!') { //온도센서값을 !전까지 끊어서 읽음
+                        } else if (strBuf.charAt(i) == '!') { //온도센서값을 !전까지 끊어서 읽음
                             str = str.replace("!", ""); //!를 ""로  바꿔서 화면에 띄움, Concat 토큰을 제거
                             showMessage(str, "Temperature"); //온도 출력
-                            Log.d("Temp2", "str:"+str);
+                            Log.d("Temp2", "str:" + str);
                             str = ""; //str을 비워서 다음 값을 수신함
                             break;
                         }
@@ -276,13 +271,12 @@ public class MainActivity extends AppCompatActivity {
                         if (strBuf.charAt(i) == '%') { //습도센서값을 %전까지 끊어서 읽음
                             str = str.replace("%", ""); //%를 ""로  바꿔서 화면에 띄움, Concat 토큰을 제거
                             showMessage(str, "Humidity"); //습도 출력
-                            Log.d("humi2", "str:"+str);
+                            Log.d("humi2", "str:" + str);
                             str = ""; //
                             break;
-                        }
-                        else {
+                        } else {
                             str += strBuf.charAt(i); //str를 char로 계속 읽어 들이게 함
-                            Log.d("test", "str:"+str);
+                            Log.d("test", "str:" + str);
                         }
                     }
                 } catch (IOException e) {
@@ -290,17 +284,17 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        public void showMessage (String strMsg, String tmp) {
+
+        public void showMessage(String strMsg, String tmp) {
             // 메시지 텍스트를 핸들러에 전달
             Message msg = Message.obtain(mHandler, 0, strMsg);
-            Log.d("DUST","showmessage:"+ strMsg);
+            Log.d("DUST", "showmessage:" + strMsg);
 
             if (tmp == "Dust") { //임시로 받아들인 메시지가 미세먼지에 관한 정보면
                 mHandler.sendMessage(msg);
             } else if (tmp == "Temperature") { //임시로 받아들인 메시지가 온도에 관한 정보면
                 mHandler2.sendMessage(msg);
-            }
-            else if (tmp == "Humidity") { //임시로 받아들인 메시지가 습도에 관한 정보면
+            } else if (tmp == "Humidity") { //임시로 받아들인 메시지가 습도에 관한 정보면
                 mHandler3.sendMessage(msg);
             }
             Log.d("tag1", strMsg);
@@ -314,74 +308,65 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    Handler mHandler = new Handler() {
+
+    Handler mHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
-                String strMsg = (String)msg.obj; //미세먼지 msg를 처리하기 위해 읽어들임
-                Log.d("test12", strMsg);
-                int dust = Integer.parseInt(strMsg); //미세먼지 msg를 int값으로 변환
-                if (dust <= 30) {
-                    imgSet.setImageResource(R.drawable.good);
-                    conditionTxt.setText("먼지 농도 : " + dust + "㎍/m³");
-                    statusTxt.setText("현재 상태 : 좋음");
-                    explainTxt.setText("공기가 맑습니다.");
-                }
-                else if(dust > 30 && dust <= 80) {
-                    imgSet.setImageResource(R.drawable.nomal);
-                    conditionTxt.setText("먼지 농도 : " + dust + "㎍/m³");
-                    statusTxt.setText("현재 상태 : 보통");
-                    explainTxt.setText("보통입니다.");
-                }
-                else if(dust > 80 && dust <= 150) {
-                    imgSet.setImageResource(R.drawable.bad);
-                    conditionTxt.setText("먼지 농도 : " + dust + "㎍/m³");
-                    statusTxt.setText("현재 상태 : 나쁨");
-                    explainTxt.setText("환기좀 시켜주세요~~");
-                }
-                else if(dust > 150) {
-                    imgSet.setImageResource(R.drawable.badd);
-                    conditionTxt.setText("먼지 농도 : " + dust + "㎍/m³");
-                    statusTxt.setText("현재 상태 : 매우 나쁨");
-                    explainTxt.setText("환기가 시급합니다!!");
+            String strMsg = (String) msg.obj; //미세먼지 msg를 처리하기 위해 읽어들임
+            Log.d("test12", strMsg);
+            int dust = Integer.parseInt(strMsg); //미세먼지 msg를 int값으로 변환
+            if (dust <= 30) {
+                imgSet.setImageResource(R.drawable.good);
+                conditionTxt.setText("먼지 농도 : " + dust + "㎍/m³");
+                statusTxt.setText("현재 상태 : 좋음");
+                explainTxt.setText("공기가 맑습니다.");
+            } else if (dust > 30 && dust <= 80) {
+                imgSet.setImageResource(R.drawable.nomal);
+                conditionTxt.setText("먼지 농도 : " + dust + "㎍/m³");
+                statusTxt.setText("현재 상태 : 보통");
+                explainTxt.setText("보통입니다.");
+            } else if (dust > 80 && dust <= 150) {
+                imgSet.setImageResource(R.drawable.bad);
+                conditionTxt.setText("먼지 농도 : " + dust + "㎍/m³");
+                statusTxt.setText("현재 상태 : 나쁨");
+                explainTxt.setText("환기좀 시켜주세요~~");
+            } else if (dust > 150) {
+                imgSet.setImageResource(R.drawable.badd);
+                conditionTxt.setText("먼지 농도 : " + dust + "㎍/m³");
+                statusTxt.setText("현재 상태 : 매우 나쁨");
+                explainTxt.setText("환기가 시급합니다!!");
             }
         }
     };
 
-    Handler mHandler2 = new Handler() {
+    Handler mHandler2 = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
-                String strMsg = (String)msg.obj; //온도 msg를 처리하기 위해 읽어들임
-                Log.d("test13", strMsg);
-                int tem = Integer.parseInt(strMsg); //온도 msg를 int값으로 변환
-                temperaturTxt.setText("온도 : " + tem + "℃");
-                if(tem<22){
-                    thImage.setImageResource(R.drawable.th_low);
-                }
-                else if (tem>=22 &&tem<=26){
-                    thImage.setImageResource(R.drawable.th_nomal);
-                }
-                else if (tem>26){
-                    thImage.setImageResource(R.drawable.th_high);
-                }
-
+            String strMsg = (String) msg.obj; //온도 msg를 처리하기 위해 읽어들임
+            Log.d("test13", strMsg);
+            int tem = Integer.parseInt(strMsg); //온도 msg를 int값으로 변환
+            temperaturTxt.setText("온도 : " + tem + "℃");
+            if (tem < 22) {
+                thImage.setImageResource(R.drawable.th_low);
+            } else if (tem >= 22 && tem <= 26) {
+                thImage.setImageResource(R.drawable.th_nomal);
+            } else if (tem > 26) {
+                thImage.setImageResource(R.drawable.th_high);
+            }
         }
-
-
     };
 
-    Handler mHandler3 = new Handler() {
+    Handler mHandler3 = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
-                String strMsg = (String)msg.obj; //습도 msg를 처리하기 위해 읽어들임
-                Log.d("test14", strMsg);
-                int hum = Integer.parseInt(strMsg); //습도 msg를 int값으로 변환
-                humidityTxt.setText("습도: " + hum+ "%");
-                if (hum < 40 ) {
-                    humiImage.setImageResource(R.drawable.hu_low);
-                }
-                else if (hum >= 40 && hum <= 60){
-                    humiImage.setImageResource(R.drawable.hu_nomal);
-                }
-                else if (hum > 60){
-                    humiImage.setImageResource(R.drawable.hu_high);
-                }
+            String strMsg = (String) msg.obj; //습도 msg를 처리하기 위해 읽어들임
+            Log.d("test14", strMsg);
+            int hum = Integer.parseInt(strMsg); //습도 msg를 int값으로 변환
+            humidityTxt.setText("습도: " + hum + "%");
+            if (hum < 40) {
+                humiImage.setImageResource(R.drawable.hu_low);
+            } else if (hum >= 40 && hum <= 60) {
+                humiImage.setImageResource(R.drawable.hu_nomal);
+            } else if (hum > 60) {
+                humiImage.setImageResource(R.drawable.hu_high);
+            }
         }
     };
 }
