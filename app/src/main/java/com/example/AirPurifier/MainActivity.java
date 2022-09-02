@@ -40,7 +40,6 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
-
     ImageView imgSet, humiImage, thImage;
     LinearLayout layout;
     TextView conditionTxt, statusTxt, explainTxt, temperaturTxt, humidityTxt;
@@ -77,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         thImage = findViewById(R.id.thImage);
         setSupportActionBar(toolbar);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { // 버전30이상 부터 권한 추가 부여 요청함
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { // 버전 30이상 부터 권한 추가 부여 요청함
             requestPermissions(
                     new String[]{
                             Manifest.permission.BLUETOOTH,
@@ -290,11 +289,11 @@ public class MainActivity extends AppCompatActivity {
             Message msg = Message.obtain(mHandler, 0, strMsg);
             Log.d("DUST", "showmessage:" + strMsg);
 
-            if (tmp == "Dust") { //임시로 받아들인 메시지가 미세먼지에 관한 정보면
+            if (tmp.equals("Dust")) { //임시로 받아들인 메시지가 미세먼지에 관한 정보면
                 mHandler.sendMessage(msg);
-            } else if (tmp == "Temperature") { //임시로 받아들인 메시지가 온도에 관한 정보면
+            } else if (tmp.equals("Temperature")) { //임시로 받아들인 메시지가 온도에 관한 정보면
                 mHandler2.sendMessage(msg);
-            } else if (tmp == "Humidity") { //임시로 받아들인 메시지가 습도에 관한 정보면
+            } else if (tmp.equals("Humidity")) { //임시로 받아들인 메시지가 습도에 관한 정보면
                 mHandler3.sendMessage(msg);
             }
             Log.d("tag1", strMsg);
@@ -316,23 +315,23 @@ public class MainActivity extends AppCompatActivity {
             int dust = Integer.parseInt(strMsg); //미세먼지 msg를 int값으로 변환
             if (dust <= 30) {
                 imgSet.setImageResource(R.drawable.good);
-                conditionTxt.setText("먼지 농도 : " + dust + "㎍/m³");
-                statusTxt.setText("현재 상태 : 좋음");
+                conditionTxt.setText(dust);
+                statusTxt.setText("좋음");
                 explainTxt.setText("공기가 맑습니다.");
             } else if (dust > 30 && dust <= 80) {
                 imgSet.setImageResource(R.drawable.nomal);
-                conditionTxt.setText("먼지 농도 : " + dust + "㎍/m³");
-                statusTxt.setText("현재 상태 : 보통");
+                conditionTxt.setText(dust);
+                statusTxt.setText("보통");
                 explainTxt.setText("보통입니다.");
             } else if (dust > 80 && dust <= 150) {
                 imgSet.setImageResource(R.drawable.bad);
-                conditionTxt.setText("먼지 농도 : " + dust + "㎍/m³");
-                statusTxt.setText("현재 상태 : 나쁨");
+                conditionTxt.setText(dust);
+                statusTxt.setText("나쁨");
                 explainTxt.setText("환기좀 시켜주세요~~");
             } else if (dust > 150) {
                 imgSet.setImageResource(R.drawable.badd);
-                conditionTxt.setText("먼지 농도 : " + dust + "㎍/m³");
-                statusTxt.setText("현재 상태 : 매우 나쁨");
+                conditionTxt.setText(dust);
+                statusTxt.setText("매우 나쁨");
                 explainTxt.setText("환기가 시급합니다!!");
             }
         }
@@ -343,7 +342,7 @@ public class MainActivity extends AppCompatActivity {
             String strMsg = (String) msg.obj; //온도 msg를 처리하기 위해 읽어들임
             Log.d("test13", strMsg);
             int tem = Integer.parseInt(strMsg); //온도 msg를 int값으로 변환
-            temperaturTxt.setText("온도 : " + tem + "℃");
+            temperaturTxt.setText(tem);
             if (tem < 22) {
                 thImage.setImageResource(R.drawable.th_low);
             } else if (tem >= 22 && tem <= 26) {
@@ -359,7 +358,7 @@ public class MainActivity extends AppCompatActivity {
             String strMsg = (String) msg.obj; //습도 msg를 처리하기 위해 읽어들임
             Log.d("test14", strMsg);
             int hum = Integer.parseInt(strMsg); //습도 msg를 int값으로 변환
-            humidityTxt.setText("습도: " + hum + "%");
+            humidityTxt.setText(hum);
             if (hum < 40) {
                 humiImage.setImageResource(R.drawable.hu_low);
             } else if (hum >= 40 && hum <= 60) {

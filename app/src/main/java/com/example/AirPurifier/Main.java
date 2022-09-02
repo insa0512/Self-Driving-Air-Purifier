@@ -20,6 +20,6 @@ public class Main extends Activity {
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out); //화면 부드럽게 전환
             finish();
 
-        }, 3000);
+        }, 2000);
     }
 }

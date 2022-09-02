@@ -13,64 +13,24 @@
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-
-    <LinearLayout
-        android:layout_width="345dp"
-        android:layout_height="93dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.74"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/toolbar"
-        app:layout_constraintVertical_bias="0.89">
-
-        <ImageView
-            android:id="@+id/humiImage"
-            android:layout_width="46dp"
-            android:layout_height="51dp"
-            tools:layout_editor_absoluteX="106dp"
-            tools:layout_editor_absoluteY="260dp" />
-
-        <TextView
-            android:id="@+id/HumidityText"
-            android:layout_width="124dp"
-            android:layout_height="wrap_content"
-            android:text="습도: 0%"
-            android:textColor="#000000"
-            android:textSize="25dp" />
-
-        <ImageView
-            android:id="@+id/thImage"
-            android:layout_width="46dp"
-            android:layout_height="51dp"
-            tools:layout_editor_absoluteX="106dp"
-            tools:layout_editor_absoluteY="260dp" />
-
-        <TextView
-            android:id="@+id/temperaturText"
-            android:layout_width="130dp"
-            android:layout_height="wrap_content"
-            android:text="온도: 0℃"
-            android:textColor="#000000"
-            android:textSize="25dp" />
-
-    </LinearLayout>
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        tools:ignore="MissingConstraints" />
 
     <LinearLayout
         android:id="@+id/layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="100dp"
         android:color="#ffff00"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/imageSet"
@@ -80,43 +40,155 @@
             tools:layout_editor_absoluteX="106dp"
             tools:layout_editor_absoluteY="260dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="260sp"
             android:layout_height="wrap_content"
-            android:text=""
-            android:textColor="#000000"
-            android:textSize="10dp" />
+            android:layout_marginTop="20sp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/stausText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text=""
-            android:textColor="#000000"
-            android:textSize="20dp"
-            tools:layout_editor_absoluteX="126dp"
-            tools:layout_editor_absoluteY="579dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="현재 상태 :"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/stausText"
+                android:layout_width="60sp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:hint="좋음"
+                android:text=""
+                android:textColor="#000000"
+                android:textSize="24sp"
+                tools:layout_editor_absoluteX="126dp"
+                tools:layout_editor_absoluteY="579dp" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/explainText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:hint="상태 설명"
             android:text=""
             android:textColor="#000000"
-            android:textSize="18dp"
+            android:textSize="20sp"
             tools:layout_editor_absoluteX="154dp"
             tools:layout_editor_absoluteY="551dp" />
 
-        <TextView
-            android:id="@+id/contidionText"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="260sp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20sp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="먼지 농도 :"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/contidionText"
+                android:layout_width="50sp"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:hint="150"
+                android:textColor="#000000"
+                android:textSize="24sp"
+                tools:layout_editor_absoluteX="171dp"
+                tools:layout_editor_absoluteY="513dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4sp"
+                android:text="㎍/m³"
+                android:textSize="24sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="260sp"
             android:layout_height="wrap_content"
-            android:text="먼지 농도: 0㎍/m³"
-            android:textColor="#000000"
-            android:textSize="25dp"
-            tools:layout_editor_absoluteX="171dp"
-            tools:layout_editor_absoluteY="513dp" />
+            android:layout_marginTop="20sp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/humiImage"
+                android:layout_width="50sp"
+                android:layout_height="50sp"
+                tools:layout_editor_absoluteX="106dp"
+                tools:layout_editor_absoluteY="260dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="습도 :"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/HumidityText"
+                android:layout_width="50sp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="right"
+                android:hint="100"
+                android:textColor="#000000"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="4sp"
+                android:text="%"
+                android:textSize="24sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="260sp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20sp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/thImage"
+                android:layout_width="50sp"
+                android:layout_height="50sp"
+                tools:layout_editor_absoluteX="106dp"
+                tools:layout_editor_absoluteY="260dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="온도 :"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/temperaturText"
+                android:layout_width="50sp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="right"
+                android:hint="40"
+                android:textColor="#000000"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="4sp"
+                android:text="℃"
+                android:textSize="24sp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
