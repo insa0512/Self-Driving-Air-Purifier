@@ -67,13 +67,11 @@ public class MainActivity extends AppCompatActivity {
 
         imgSet = findViewById(R.id.imageSet);
         conditionTxt = findViewById(R.id.contidionText);
-        statusTxt = findViewById(R.id.stausText);
+        statusTxt = findViewById(R.id.statusText);
         explainTxt = findViewById(R.id.explainText);
         temperaturTxt = findViewById(R.id.temperaturText);
         humidityTxt = findViewById(R.id.humidityText);
         toolbar = findViewById(R.id.toolbar);
-        humiImage = findViewById(R.id.humiImage);
-        thImage = findViewById(R.id.thImage);
         setSupportActionBar(toolbar);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { // 버전 30이상 부터 권한 추가 부여 요청함
@@ -175,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("MissingPermission")
     void listPairedDevices() { // 블루투스 기기 목록
         if (mBluetoothAdapter.isEnabled()) { // 블루투스가 이미 켜져 있을 때
-            mPairedDevices = mBluetoothAdapter.getBondedDevices(); //블루투스 목록 가져옴
+            mPairedDevices = mBluetoothAdapter.getBondedDevices(); // 블루투스 목록 가져옴
 
             if (mPairedDevices.size() > 0) { //페어링할 기기의 목록이 1개 이상일 때 장치 목록을 보여줌
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -320,17 +318,17 @@ public class MainActivity extends AppCompatActivity {
                 explainTxt.setText("공기가 맑습니다.");
             } else if (dust <= 80) {
                 imgSet.setImageResource(R.drawable.stat_nomal);
-                conditionTxt.setText(dust);
+                conditionTxt.setText(strMsg);
                 statusTxt.setText("보통");
                 explainTxt.setText("보통입니다.");
             } else if (dust <= 150) {
                 imgSet.setImageResource(R.drawable.stat_bad);
-                conditionTxt.setText(dust);
+                conditionTxt.setText(strMsg);
                 statusTxt.setText("나쁨");
                 explainTxt.setText("환기좀 시켜주세요~~");
             } else {
                 imgSet.setImageResource(R.drawable.stat_warning);
-                conditionTxt.setText(dust);
+                conditionTxt.setText(strMsg);
                 statusTxt.setText("매우 나쁨");
                 explainTxt.setText("환기가 시급합니다!!");
             }
@@ -342,14 +340,13 @@ public class MainActivity extends AppCompatActivity {
             String strMsg = (String) msg.obj; //온도 msg를 처리하기 위해 읽어들임
             Log.d("test13", strMsg);
             int tem = Integer.parseInt(strMsg); //온도 msg를 int값으로 변환
-            temperaturTxt.setText(tem);
-            if (tem < 22) {
-                thImage.setImageResource(R.drawable.th_low);
+            temperaturTxt.setText(strMsg);
+/*            if (tem < 22) {
             } else if (tem <= 26) {
                 thImage.setImageResource(R.drawable.th_nomal);
             } else {
                 thImage.setImageResource(R.drawable.th_high);
-            }
+            }*/
         }
     };
 
@@ -358,14 +355,14 @@ public class MainActivity extends AppCompatActivity {
             String strMsg = (String) msg.obj; //습도 msg를 처리하기 위해 읽어들임
             Log.d("test14", strMsg);
             int hum = Integer.parseInt(strMsg); //습도 msg를 int값으로 변환
-            humidityTxt.setText(hum);
-            if (hum < 40) {
+            humidityTxt.setText(strMsg);
+/*            if (hum < 40) {
                 humiImage.setImageResource(R.drawable.hu_low);
             } else if (hum <= 60) {
                 humiImage.setImageResource(R.drawable.hu_nomal);
             } else {
                 humiImage.setImageResource(R.drawable.hu_high);
-            }
+            }*/
         }
     };
 }
